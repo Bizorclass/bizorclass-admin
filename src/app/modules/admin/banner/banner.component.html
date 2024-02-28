@@ -1,0 +1,52 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <div class="flex-auto p-6 sm:p-10">
+        <!-- <div class="h-400 min-h-400 max-h-400 border-2 border-dashed border-gray-300 rounded-2xl"> -->
+
+            <div class="flex flex-col sm:flex-row md:flex-row flex-auto justify-between py-8 border-b">
+                <!-- Title -->
+                <div>
+                    <div class="text-4xl font-extrabold tracking-tight leading-none">
+                        Banner Images
+                    </div>
+                </div>
+
+                <!-- Main actions -->
+                <div class="flex items-center mt-4 sm:mt-0 md:mt-0">
+                    <button class="ml-4" mat-flat-button [color]="'primary'" (click)="addBanner()">
+                        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                        <span class="ml-2 mr-1">Add Banner</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 items-start w-full max-w-400 mt-4">
+                <!-- Card #1 -->
+                <ng-container *ngIf="images?.length || isLoading; else noImages">
+                    <fuse-card class="flex flex-col max-w-80 max-h-40 h-40 w-full filter-article relative" *ngFor="let bannerItem of images">
+                        <img class="object-cover" [src]='bannerItem' alt="Card cover image">
+                        <button class="bg-[#FFFFFF] shadow-md absolute top-2 right-2 rounded-[50%] p-[6px_7px_2px_6px]" (click)="gotoDeleteImage(bannerItem)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </fuse-card>
+                </ng-container>
+
+                <!-- <fuse-card class="flex flex-col max-w-80 w-full filter-article" *ngFor="let bannerItem of images">
+                    <div>Add Image</div>
+                </fuse-card> -->
+            </div>
+
+            <ng-template #noImages>
+                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center w-full">
+                    There are no banner images!
+                   <div class="mt-4">
+                        <button class="ml-4" mat-flat-button [color]="'primary'" (click)="addBanner()">
+                            <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                            <span class="ml-2 mr-1">Add Banner</span>
+                        </button>
+                   </div>
+                </div>
+            </ng-template>
+
+        <!-- </div> -->
+    </div>
+</div>

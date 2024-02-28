@@ -1,0 +1,54 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+    <!-- Main -->
+    <!-- <div class="p-4 flex flex-row flex-wrap"> -->
+
+        <div class="flex items-center mt-4 mb-4 p-4">
+            <!-- Search -->
+            <div class="flex-auto">
+                <mat-form-field class="fuse-mat-dense fuse-mat-rounded w-full min-w-50" subscriptSizing="dynamic">
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:search'"
+                    ></mat-icon>
+                    <input
+                        [formControl]="searchInputControl"
+                        matInput
+                        [autocomplete]="'off'"
+                        [placeholder]="'Search student'"
+                    />
+                </mat-form-field>
+            </div>
+        </div>
+
+            <div
+                class="p-4 flex flex-row flex-wrap"
+                infiniteScroll
+                [infiniteScrollDistance]="2"
+                [infiniteScrollThrottle]="50"
+                (scrolled)="onScroll()"
+            >
+
+                <ng-container *ngFor="let studentItem of studentList">
+                    <fuse-card class="flex filter-info cardContainer" [routerLink]="['./'+studentItem?.student_id]" >
+                        <img class="w-24 h-30 object-cover" [src]="studentItem?.photo_url" (error)="onTeacherImgError($event)" alt="Card cover image">
+                        <div class="flex flex-col flex-auto justify-center p-4 overflow-hidden rightSideContainer">
+                            <div class="text-lg font-semibold leading-tight">{{studentItem?.first_name}} {{studentItem?.last_name}}</div>
+                            <div class="text-md text-secondary">Class: {{studentItem?.class || "--"}}</div>
+                            <div class="text-md text-green-600 mt-3">{{studentItem?.email}}</div>
+                        </div>
+                    </fuse-card>
+                </ng-container>
+            </div>
+
+            <ng-container *ngIf="isLoading">
+                <div class="flex flex-1 items-center justify-center my-4">
+                    <mat-spinner></mat-spinner>
+                </div>
+            </ng-container>
+
+
+    <!-- </div> -->
+
+</div>

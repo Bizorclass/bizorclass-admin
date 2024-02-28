@@ -1,0 +1,585 @@
+<div class="flex flex-col w-full">
+
+    <!-- View mode -->
+    <ng-container *ngIf="!editMode">
+
+        <!-- Header -->
+        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="teacherObject?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="teacherObject?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+                <a
+                    class="bg-gray-700"
+                    mat-icon-button
+                    [matTooltip]="'Close'"
+                    [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </a>
+            </div>
+        </div>
+
+        <!-- admin -->
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+
+                <!-- Avatar and actions -->
+                <div class="flex flex-auto items-end -mt-16">
+                    <!-- Avatar -->
+                    <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                        <img
+                            class="object-cover w-full h-full"
+                            *ngIf="teacherObject?.photo_url"
+                            [src]="teacherObject?.photo_url">
+                        <div
+                            class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                            *ngIf="!teacherObject?.photo_url">
+                            {{teacherObject?.first_name?.charAt(0)}}
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="flex items-center ml-auto mb-1">
+                        <button
+                            mat-stroked-button
+                            (click)="toggleEditMode(true)">
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                            <span class="ml-2">Edit</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- First Name -->
+                <div class="mt-3 text-4xl font-bold truncate">{{teacherObject?.first_name}} {{teacherObject?.last_name}}</div>
+
+
+
+                <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
+
+                    <!-- Account Active -->
+                    <ng-container *ngIf="teacherObject?.hasOwnProperty('is_account_active')">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'mat_outline:manage_accounts'"></mat-icon>
+
+                            <div class="min-w-0 ml-6 space-y-1">
+                                <div class="flex items-center leading-6">
+                                    <mat-slide-toggle [disabled]="isAccountActiveLoading" [checked]="teacherObject?.is_account_active" (change)="activeStatusChange()">Account Active status</mat-slide-toggle>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Title -->
+                    <ng-container *ngIf="teacherObject?.email">
+                        <!-- Email -->
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:mail'"></mat-icon>
+                            <div class="min-w-0 ml-6 space-y-1">
+                                <div class="flex items-center leading-6">
+                                    <a
+                                        class="hover:underline text-primary-500"
+                                        [href]="'mailto:' + teacherObject?.email"
+                                        target="_blank">
+                                        {{teacherObject?.email}}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="teacherObject?.about_description">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
+                            <div class="max-w-none ml-6 prose prose-sm">
+                                {{teacherObject?.about_description}}
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="teacherObject?.degree">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
+                            <div class="max-w-none ml-6 prose prose-sm">
+                                {{teacherObject?.degree}}
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="teacherObject?.year_experience">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="max-w-none ml-6 prose prose-sm">
+                                {{teacherObject?.year_experience}} Year
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="teacherObject?.city">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:home'"></mat-icon>
+                            <div class="max-w-none ml-6 prose prose-sm">
+                                {{teacherObject?.city}}
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="teacherObject?.teacher_subject_description">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
+                            <div class="flex flex-col">
+                                <div class="max-w-none ml-6 font-bold prose prose-sm"> Teacher course short description :  </div>
+                                <div class="max-w-none ml-6 prose prose-sm"> {{teacherObject?.teacher_subject_description}} </div>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Subjects -->
+                    <ng-container *ngIf="teacherObject?.subjects.length">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:book-open'"></mat-icon>
+                            <div class="min-w-0 ml-6 space-y-1">
+                                <ng-container *ngFor="let subjectItem of teacherObject?.subjects; trackBy: trackByFn">
+                                    <div class="flex items-center leading-6">
+                                        <!-- <div class="sm:ml-3 font-mono">{{subjectItem?.subject_id?.course_id.title}}</div> -->
+                                        <div class="ml-2.5 font-mono" [matTooltip]="'Course Name'">{{subjectItem?.subject_id?.course_id.title}}</div>
+                                        <div class="text-md truncate text-secondary">
+                                            <span class="mx-2">&bull;</span>
+                                            <span class="font-medium" [matTooltip]="'Subject Name'">{{subjectItem?.subject_id?.title}}</span>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Board -->
+                    <ng-container *ngIf="teacherObject?.board?.length">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:book-open'"></mat-icon>
+                            <div class="min-w-0 ml-6 space-y-1">
+                                <ng-container *ngFor="let boardItem of teacherObject?.board; trackBy: trackByFn">
+                                    <div class="flex items-center leading-6">
+                                        <div class="ml-2.5 font-mono" [matTooltip]="'Course Name'">{{boardItem}}</div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- language -->
+                    <ng-container *ngIf="teacherObject?.language?.length">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:globe-alt'"></mat-icon>
+                            <div class="min-w-0 ml-6 space-y-1">
+                                <ng-container *ngFor="let languageItem of teacherObject?.language; trackBy: trackByFn">
+                                    <div class="flex items-center leading-6">
+                                        <div class="ml-2.5 font-mono" [matTooltip]="'Course Name'">{{languageItem}}</div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                </div>
+
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="editMode">
+
+        <!-- Header -->
+        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-accent-100 dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="teacherObject?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="teacherObject?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+                <a class="bg-gray-700" mat-icon-button [matTooltip]="'Close'" [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <form [formGroup]="teacherForm">
+
+                    <!-- Avatar -->
+                    <div class="flex flex-auto items-end -mt-16">
+                        <div class="relative flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card">
+                            <!-- Upload / Remove avatar -->
+                            <div class="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+                            <div class="absolute inset-0 flex items-center justify-center z-20">
+                                <div>
+                                    <input
+                                        id="avatar-file-input"
+                                        class="absolute h-0 w-0 opacity-0 invisible pointer-events-none"
+                                        type="file"
+                                        [multiple]="false"
+                                        [accept]="'image/jpeg, image/png'"
+                                        (change)="uploadAvatar(avatarFileInput.files)"
+                                        #avatarFileInput>
+                                    <label
+                                        class="flex items-center justify-center w-10 h-10 rounded-full cursor-pointer hover:bg-hover"
+                                        for="avatar-file-input"
+                                        matRipple>
+                                        <mat-icon
+                                            class="text-white"
+                                            [svgIcon]="'heroicons_outline:camera'"></mat-icon>
+                                    </label>
+                                </div>
+                                <!-- <div>
+                                    <button
+                                        mat-icon-button
+                                        (click)="removeAvatar()">
+                                        <mat-icon
+                                            class="text-white"
+                                            [svgIcon]="'heroicons_outline:trash'"></mat-icon>
+                                    </button>
+                                </div> -->
+                            </div>
+                            <!-- Image/Letter -->
+                            <img
+                                class="object-cover w-full h-full"
+                                *ngIf="avatarObject || teacherObject?.photo_url"
+                                [src]="avatarObject ? imageFileTOString(avatarObject) : teacherObject?.photo_url">
+                            <div
+                                class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                                *ngIf="!teacherObject?.photo_url">
+                                {{teacherObject?.first_name.charAt(0)}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>First Name</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            <input
+                                matInput
+                                [formControlName]="'first_name'"
+                                [placeholder]="'First Name'"
+                                [spellcheck]="false">
+                                <mat-error>
+                                    First name is required
+                                </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>Last Name</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            <input
+                                matInput
+                                [formControlName]="'last_name'"
+                                [placeholder]="'Last Name'"
+                                [spellcheck]="false">
+                                <mat-error>
+                                    Last name is required
+                                </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- City -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>City</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:home'"></mat-icon>
+                            <input
+                                matInput
+                                [formControlName]="'city'"
+                                [placeholder]="'City'"
+                                [spellcheck]="false">
+                                <mat-error>
+                                    City is required
+                                </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mt-8">
+                        <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                            <mat-label>Email</mat-label>
+                            <mat-icon matPrefix class="hidden sm:flex icon-size-5" [svgIcon]="'heroicons_solid:mail'"></mat-icon>
+                            <input matInput type="email" [formControlName]="'email'" [placeholder]="'Email address'" [spellcheck]="false">
+                            <mat-error *ngIf="teacherForm.get('email').hasError('required')">
+                                Email address is required
+                            </mat-error>
+                            <mat-error *ngIf="teacherForm.get('email').hasError('email')">
+                                Please enter a valid email address
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mt-8" *ngIf="!teacherObject?.teacher_id">
+                        <mat-form-field class="w-full">
+                            <mat-label>Password</mat-label>
+                            <input
+                                id="password"
+                                matInput
+                                type="password"
+                                [formControlName]="'password'"
+                                #passwordField>
+                            <button
+                                mat-icon-button
+                                type="button"
+                                (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                                matSuffix>
+                                <mat-icon
+                                    class="icon-size-5"
+                                    *ngIf="passwordField.type === 'password'"
+                                    [svgIcon]="'heroicons_solid:eye'"></mat-icon>
+                                <mat-icon
+                                    class="icon-size-5"
+                                    *ngIf="passwordField.type === 'text'"
+                                    [svgIcon]="'heroicons_solid:eye-off'"></mat-icon>
+                            </button>
+                            <mat-error *ngIf="teacherForm.get('password').hasError('passwordValidator')">
+                                {{teacherForm.get('password').errors.passwordValidator}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Year of experience -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>Year of experience</mat-label>
+                            <input
+                                matInput
+                                min="0"
+                                type="number"
+                                [formControlName]="'year_experience'"
+                                [placeholder]="'Year of experience'"
+                                [spellcheck]="false">
+                                <mat-error>
+                                    Year of experience is required
+                                </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Degree -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>Degree</mat-label>
+                            <input
+                                matInput
+                                type="text"
+                                [formControlName]="'degree'"
+                                [placeholder]="'Degree'"
+                                [spellcheck]="false"
+                            >
+                            <mat-error>
+                                Degree is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- is_vaccinated -->
+                    <div class="mt-8">
+                        <mat-form-field class="w-full" >
+                            <mat-label>Vaccinated</mat-label>
+                            <input matInput type="text" [formControlName]="'is_vaccinated'"  hidden>
+                            <!-- <mat-slide-toggle [formControlName]="'is_vaccinated'"></mat-slide-toggle> -->
+                            <mat-slide-toggle [checked]="teacherForm.get('is_vaccinated').value" (change)="vaccinateStatusChange($event)"></mat-slide-toggle>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Education Board -->
+                    <div class="mt-8">
+                        <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                            <mat-label>Education board</mat-label>
+                            <!-- <input
+                                matInput
+                                type="text"
+                                [formControlName]="'degree'"
+                                [placeholder]="'Degree'"
+                                [spellcheck]="false"
+                            > -->
+                            <mat-select [formControlName]="'board'" [placeholder]="'Education board'" [spellcheck]="false" multiple>
+                                <ng-container *ngFor="let boardItem of BoardList">
+                                    <mat-option [value]="boardItem">{{boardItem}}</mat-option>
+                                </ng-container>
+                              </mat-select>
+                            <mat-error>
+                                Education board is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Language -->
+                    <div class="mt-8">
+                        <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                            <mat-label>Language</mat-label>
+                            <mat-select [formControlName]="'language'" [placeholder]="'Language'" [spellcheck]="false" multiple>
+                                <ng-container *ngFor="let languageItem of LanguagesList">
+                                    <mat-option [value]="languageItem">{{languageItem}}</mat-option>
+                                </ng-container>
+                              </mat-select>
+                            <mat-error>
+                                Language is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- about description -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>About description</mat-label>
+                            <textarea
+                                matInput
+                                type="text"
+                                [formControlName]="'about_description'"
+                                [placeholder]="'About description'"
+                                [spellcheck]="false"
+                            ></textarea>
+                            <mat-error>
+                                About description is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Linkein link -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>Linkein link</mat-label>
+                            <input
+                                matInput
+                                type="text"
+                                [formControlName]="'linkedin_link'"
+                                [placeholder]="'Linkein link'"
+                                [spellcheck]="false"
+                            >
+                            <mat-error>
+                                Linkein link is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- teacher subject description -->
+                    <div class="mt-8">
+                        <mat-form-field
+                            class="w-full"
+                            [subscriptSizing]="'dynamic'">
+                            <mat-label>Teacher course short description</mat-label>
+                            <textarea
+                                matInput
+                                type="text"
+                                [formControlName]="'teacher_subject_description'"
+                                [placeholder]="'About description'"
+                                [spellcheck]="false"
+                            ></textarea>
+                            <mat-error>
+                                About description is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Subjects -->
+                    <div class="flex flex-col flex-auto mt-8 bg-card shadow rounded overflow-hidden">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700">
+                            <p class="text-lg font-medium">Subjects</p>
+                            <!-- <p class="text-secondary">We'll always let you know about important changes, but you pick what else you want to hear about.</p> -->
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div class="p-4">
+                            <div class="flex flex-col gt-xs:flex-row mt-8" *ngFor="let courseItem of serverCoursesAndSubject">
+                                <span class="font-semibold mb-2 gt-xs:text-right gt-xs:min-w-32 gt-xs:mr-4 gt-xs:mb-0">{{courseItem.title}}</span>
+                                <div class="flex flex-col">
+                                    <div *ngFor="let subjectItem of courseItem?.subjects" class="flex flex-row justify-between mb-2">
+                                        <mat-checkbox
+                                            #pri
+                                            class=""
+                                            [checked]="isCheckedSubject(subjectItem, teacherForm.get('subjects'))"
+                                            [color]="'primary'"
+                                            (change)="onSubjectChange(subjectItem)"
+                                        >
+                                            {{subjectItem.title}}
+                                        </mat-checkbox>
+                                        <!-- (keyup)="setPriceSubject(subjectItem, teacherForm.get('subjects'), $event)" -->
+                                        <!-- <mat-form-field subscriptSizing="dynamic">
+                                            <input matInput [placeholder]="'Price'" type="number" min="0" [disabled]="!pri.checked" [formControl]="setPriceSubject(subjectItem, teacherForm.get('subjects'), $event)">
+                                        </mat-form-field> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                        <!-- Delete -->
+                        <!-- <button
+                            *ngIf="teacherObject?.teacher_id"
+                            mat-button
+                            [color]="'warn'"
+                            [matTooltip]="'Delete'"
+                            (click)="deleteContact()">
+                            Delete
+                        </button> -->
+                        <!-- Cancel -->
+                        <button
+                            class="ml-auto"
+                            mat-button
+                            [matTooltip]="'Cancel'"
+                            (click)="teacherObject?.teacher_id ? toggleEditMode(false) : goBack()">
+                            Cancel
+                        </button>
+                        <!-- Save -->
+                        <button
+                            class="ml-2"
+                            [disabled]="teacherForm.invalid"
+                            mat-flat-button
+                            [color]="'primary'"
+                            [matTooltip]="'Save'"
+                            (click)="updateContact()">
+                            Save
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,156 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Content -->
+    <div class="flex flex-col flex-auto items-center sm:items-start mb-4">
+
+        <ng-container>
+            <div class="flex flex-col w-full items-center sm:items-start mt-4 sm:mt-0  space-y-1 text-center sm:text-left">
+
+                <!-- Title -->
+                <ng-container>
+                    <div class="text-xl leading-6 font-medium mb-4"> Add Subscription Plan </div>
+                </ng-container>
+
+                <ng-container>
+                    <form [formGroup]="subscriptionForm" class="w-full">
+                        <div class="w-full">
+                            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                                <mat-label>Plan name</mat-label>
+                                <input
+                                    matInput
+                                    type="text"
+                                    [formControlName]="'title'"
+                                    [placeholder]="'Plan name'"
+                                    [spellcheck]="false"
+                                >
+                                <mat-error>
+                                    Plan name is required.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="mt-4 w-full">
+                            <mat-form-field
+                                class="w-full"
+                                [subscriptSizing]="'dynamic'">
+                                <mat-label>Duration (in days)</mat-label>
+                                <input
+                                    matInput
+                                    min="0"
+                                    type="number"
+                                    [formControlName]="'duration_days'"
+                                    [placeholder]="'Duration'"
+                                    [spellcheck]="false"
+                                >
+                                <mat-error>
+                                    Duration is required.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="mt-4 w-full">
+                            <mat-form-field
+                                class="w-full"
+                                [subscriptSizing]="'dynamic'">
+                                <mat-label>Price</mat-label>
+                                <input
+                                    matInput
+                                    min="0"
+                                    type="number"
+                                    [formControlName]="'price'"
+                                    [placeholder]="'Price'"
+                                    [spellcheck]="false"
+                                >
+                                <mat-error>
+                                    Price is required.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="mt-4 w-full">
+                            <!-- <mat-form-field
+                                class="w-full"
+                                [subscriptSizing]="'dynamic'">
+                                <mat-label>Price</mat-label>
+                                <input
+                                    matInput
+                                    min="0"
+                                    type="number"
+                                    [formControlName]="'price'"
+                                    [placeholder]="'Price'"
+                                    [spellcheck]="false"
+                                >
+                                <mat-error>
+                                    Price is required.
+                                </mat-error>
+                            </mat-form-field> -->
+
+                            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                                <mat-label>Schedule type</mat-label>
+                                <mat-select [formControlName]="'schedule_type'">
+                                    <!-- <mat-option value="select1-1">Daily</mat-option> -->
+                                    <mat-option value="weekly">Weekly</mat-option>
+                                    <mat-option value="monthly">Monthly</mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    Schedule type is required.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="mt-4 w-full">
+                            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                                <mat-label>Subscription type</mat-label>
+                                <mat-select [formControlName]="'subscription_type'">
+                                    <!-- <mat-option value="select1-1">Daily</mat-option> -->
+                                    <mat-option value="single">Single</mat-option>
+                                    <mat-option value="group">Group</mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    Subscription type is required.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="mt-4 w-full">
+                            <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
+                                <mat-label>Course</mat-label>
+                                <mat-select [formControlName]="'course_id'">
+
+                                    <ng-container *ngFor="let courseItem of courseList">
+                                        <mat-option [value]="courseItem.course_id">{{courseItem?.title}}</mat-option>
+                                    </ng-container>
+
+                                </mat-select>
+                                <mat-error>
+                                    Subscription type is required.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </form>
+
+                </ng-container>
+            </div>
+        </ng-container>
+
+    </div>
+
+    <!-- Actions -->
+    <ng-container>
+        <div class="flex items-center justify-center sm:justify-end space-x-3 bg-gray-50 dark:bg-black dark:bg-opacity-10">
+
+            <!-- Cancel -->
+            <ng-container>
+                <button mat-stroked-button (click)="closeModal(false)">
+                    cancel
+                </button>
+            </ng-container>
+
+            <!-- Confirm -->
+            <ng-container>
+                <button mat-flat-button [color]="'primary'" (click)="saveSubscription()" [disabled]="subscriptionForm.invalid">
+                    Save
+                </button>
+            </ng-container>
+
+        </div>
+    </ng-container>
+
+</div>

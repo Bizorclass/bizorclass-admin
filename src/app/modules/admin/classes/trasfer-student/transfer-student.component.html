@@ -1,0 +1,275 @@
+<div class="relative flex flex-col w-full h-full">
+
+    <!-- Content -->
+    <div class="flex flex-col flex-auto items-center sm:items-start mb-4">
+
+        <ng-container>
+            <div class="flex flex-col flex-auto w-full items-center sm:items-start mt-4 sm:mt-0  space-y-1 text-center sm:text-left">
+
+                <!-- Title -->
+                <ng-container>
+                    <div class="text-xl leading-6 font-medium mb-4"> Transfer student to another teacher. </div>
+                </ng-container>
+
+                <ng-container>
+
+                    <div class="flex flex-auto overflow-hidden w-full">
+
+                        <!-- Products list -->
+                        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+                            <ng-container *ngIf="teacherList">
+                                <ng-container *ngIf="teacherList.length > 0; else noTeacherList">
+                                    <div class="grid">
+                                        <!-- Header -->
+                                        <div class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5" matSort matSortDisableClear>
+                                            <div class="">Photo</div>
+                                            <div class="">First name</div>
+                                            <div class="">Last name</div>
+                                            <div></div>
+                                            <div class="block">Details</div>
+                                        </div>
+                                        <!-- Rows -->
+                                        <ng-container *ngIf="teacherList">
+                                            <ng-container *ngFor="let teacherItem of teacherList; trackBy: trackByFn">
+                                                <div class="inventory-grid grid items-center gap-4 py-3 px-6 md:px-8 border-b">
+
+                                                    <!-- Image -->
+                                                    <div class="flex items-center">
+                                                        <div class="relative flex flex-0 items-center justify-center w-12 h-12 mr-6 rounded overflow-hidden border">
+                                                            <img class="w-8"
+                                                                *ngIf="teacherItem.photo_url"
+                                                                [alt]="'photo_url'"
+                                                                [src]="teacherItem.photo_url">
+                                                            <div
+                                                                class="flex items-center justify-center w-full h-full text-xs font-semibold leading-none text-center uppercase"
+                                                                *ngIf="!teacherItem.photo_url">
+                                                                NO PHOTO
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- SKU -->
+                                                    <!-- <div class="hidden md:block truncate">
+                                                        {{teacherItem.sku}}
+                                                    </div> -->
+
+                                                    <!-- Name -->
+                                                    <div class="">
+                                                        {{teacherItem.first_name}}
+                                                    </div>
+
+                                                    <div class="">
+                                                        {{teacherItem.last_name}}
+                                                    </div>
+
+                                                    <div></div>
+
+                                                    <!-- Details button -->
+                                                    <div>
+                                                        <button
+                                                            class="min-w-10 min-h-7 h-7 px-2 leading-6"
+                                                            mat-stroked-button
+                                                            (click)="toggleDetails(teacherItem.teacher_id)"
+                                                        >
+                                                            <mat-icon class="icon-size-5" [svgIcon]="selectedTeacher?.teacher_id === teacherItem.teacher_id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="grid">
+                                                    <ng-container *ngIf="selectedTeacher?.teacher_id === teacherItem.teacher_id">
+                                                        <ng-container *ngTemplateOutlet="rowDetailsTemplate; context: {$implicit: teacherItem}"></ng-container>
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+
+                                    <!-- <mat-paginator
+                                        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                                        [ngClass]="{'pointer-events-none': isLoading}"
+                                        [length]="pagination.length"
+                                        [pageIndex]="pagination.page"
+                                        [pageSize]="pagination.size"
+                                        [pageSizeOptions]="[5, 10, 25, 100]"
+                                        [showFirstLastButtons]="true"
+                                    ></mat-paginator> -->
+
+                                </ng-container>
+                            </ng-container>
+
+                            <ng-template #rowDetailsTemplate let-product>
+                                <div class="shadow-lg overflow-hidden">
+                                    <!-- <div class="flex border-b"> -->
+                                        <!-- Selected product form -->
+                                        <div lass="flex flex-col w-full">
+
+                                            <div class="flex flex-col sm:flex-row p-8">
+
+                                                <div class="flex flex-auto flex-row">
+                                                    <!-- Name, description. -->
+                                                    <div class="flex flex-col w-full lg:w-2/4">
+                                                        <div class="text-xl font-medium tracking-tight mb-4">Teacher Details</div>
+                                                        <div class="flex flex-col gap-2">
+                                                            <ng-container *ngIf="selectedTeacher?.about_description">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
+                                                                    <div class="max-w-none ml-6 prose prose-sm">
+                                                                        {{selectedTeacher?.about_description}}
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="selectedTeacher?.degree">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:academic-cap'"></mat-icon>
+                                                                    <div class="max-w-none ml-6 prose prose-sm">
+                                                                        {{selectedTeacher?.degree}}
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="selectedTeacher?.year_experience">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                                                                    <div class="max-w-none ml-6 prose prose-sm">
+                                                                        {{selectedTeacher?.year_experience}} Year
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <ng-container *ngIf="selectedTeacher?.city">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:home'"></mat-icon>
+                                                                    <div class="max-w-none ml-6 prose prose-sm">
+                                                                        {{selectedTeacher?.city}}
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <!-- Subjects -->
+                                                            <ng-container *ngIf="selectedTeacher['teacher-subject']?.length">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:book-open'"></mat-icon>
+                                                                    <div class="min-w-0 ml-6 space-y-1">
+                                                                        <ng-container *ngFor="let subjectItem of selectedTeacher['teacher-subject']; trackBy: trackByFn">
+                                                                            <div class="flex items-center leading-6">
+                                                                                <!-- <div class="sm:ml-3 font-mono">{{subjectItem?.subject_id?.course_id.title}}</div> -->
+                                                                                <div class="ml-2.5 font-mono" [matTooltip]="'Course Name'">{{subjectItem?.subject_id?.course_id.title}}</div>
+                                                                                <div class="text-md truncate text-secondary">
+                                                                                    <span class="mx-2">&bull;</span>
+                                                                                    <span class="font-medium" [matTooltip]="'Subject Name'">{{subjectItem?.subject_id?.title}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <!-- Board -->
+                                                            <ng-container *ngIf="selectedTeacher?.board?.length">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:book-open'"></mat-icon>
+                                                                    <div class="min-w-0 ml-6 space-y-1">
+                                                                        <ng-container *ngFor="let boardItem of selectedTeacher?.board; trackBy: trackByFn">
+                                                                            <div class="flex items-center leading-6">
+                                                                                <div class="ml-2.5 font-mono" [matTooltip]="'Course Name'">{{boardItem}}</div>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+
+                                                            <!-- language -->
+                                                            <ng-container *ngIf="selectedTeacher?.language?.length">
+                                                                <div class="flex">
+                                                                    <mat-icon [svgIcon]="'heroicons_outline:globe-alt'"></mat-icon>
+                                                                    <div class="min-w-0 ml-6 space-y-1">
+                                                                        <ng-container *ngFor="let languageItem of selectedTeacher?.language; trackBy: trackByFn">
+                                                                            <div class="flex items-center leading-6">
+                                                                                <div class="ml-2.5 font-mono" [matTooltip]="'Course Name'">{{languageItem}}</div>
+                                                                            </div>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-container>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Subjects -->
+                                                    <div class="flex flex-col w-full lg:w-2/4 lg:pl-8">
+                                                        <div class="text-xl font-medium tracking-tight mb-4">Schedule</div>
+                                                        <div class="space-y-4">
+                                                            <!-- <table>
+                                                                <tbody>
+                                                                    <tr *ngFor="let scheduleItem of selectedTeacher.schedule">
+                                                                        <td>{{time24To12(scheduleItem?.start_time)}}</td>
+                                                                        <td>{{time24To12(scheduleItem?.end_time)}}</td>
+                                                                        <td>{{scheduleItem?.schedule_type}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table> -->
+
+                                                            <div class="relative overflow-x-auto">
+                                                               <div *ngFor="let scheduleItem of selectedTeacher.schedule" class="mb-4 shadow-lg p-2 rounded flex justify-between items-center flex-wrap gap-2">
+                                                                    <div class="flex flex-col gap-1 text-md">
+                                                                        <div><span class="font-semibold">Start Time :</span> {{time24To12(scheduleItem?.start_time)}}</div>
+                                                                        <div><span class="font-semibold">End Time :</span> {{time24To12(scheduleItem?.end_time)}}</div>
+                                                                        <div><span class="font-semibold">Schedule Type :</span> {{time24To12(scheduleItem?.schedule_type)}}</div>
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <button mat-flat-button [color]="'primary'" (click)="assignTeacher(scheduleItem)">
+                                                                            Select Schedule
+                                                                        </button>
+                                                                    </div>
+                                                               </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    <!-- </div> -->
+                                </div>
+                            </ng-template>
+
+                            <ng-template #noTeacherList>
+                                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">There are no teachers!</div>
+                            </ng-template>
+
+                        </div>
+
+                    </div>
+
+                </ng-container>
+            </div>
+        </ng-container>
+
+    </div>
+
+    <!-- Actions -->
+    <ng-container>
+        <div class="flex items-center justify-center sm:justify-end space-x-3 bg-gray-50 dark:bg-black dark:bg-opacity-10">
+
+            <!-- Cancel -->
+            <ng-container>
+                <button mat-stroked-button (click)="closeModal(false)">
+                    cancel
+                </button>
+            </ng-container>
+
+            <!-- Confirm -->
+            <ng-container>
+                <!-- (click)="saveSubscription()" [disabled]="subscriptionForm.invalid" -->
+                <button mat-flat-button [color]="'primary'" >
+                    Save
+                </button>
+            </ng-container>
+
+        </div>
+    </ng-container>
+
+</div>

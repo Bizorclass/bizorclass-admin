@@ -1,0 +1,29 @@
+/* ----------------------------------------------------------------------------------------------------- */
+/*  @ Import/write your custom styles here.
+/*  @ Styles from this file will override 'vendors.scss' and Fuse's base styles.
+/* ----------------------------------------------------------------------------------------------------- */
+
+.mat-mdc-snack-bar-container {
+  &.success-toast {
+    --mdc-snackbar-container-color: #07bc0c !important; /// background
+    --mat-mdc-snack-bar-button-color: #fff !important;
+    --mdc-snackbar-supporting-text-color: #fff !important;
+  }
+
+  &.error-toast {
+    --mdc-snackbar-container-color: #e74c3c !important; /// background
+    --mat-mdc-snack-bar-button-color: #fff !important;
+    --mdc-snackbar-supporting-text-color: #fff !important;
+  }
+}
+
+.modal-min-height-90-percent {
+  max-height: 90%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  mat-dialog-container {
+    flex: 1;
+    overflow: auto;
+  }
+}
